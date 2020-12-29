@@ -1,0 +1,119 @@
+#imports
+from tkinter import *
+import tkinter.messagebox
+from time import sleep
+#__________________________________Dictionary_______________________________________________#
+Nutzername_Passwort = {"Sobotta":"htza23!$KL", "Sandro":"Sandro", "Nobody":"Andh1sPas3"}
+#___________________________________________________________________________________________#
+#Logo
+print(" ___   _____   _       _____     _       _     ____ ")
+print("| __| | ___ | | |     | ___ |  _| |_   _| |_  | __ |")
+print("| |_  ||   || | |     ||   || |__ __| |__ __| ||__||")
+print("|_  | ||   || | |___  ||   ||   | |     | |   | __ |")
+print("__| | ||___|| |     | ||___||   | |     | |   ||  ||")
+print("|___| |_____| |_____| |_____|   |_|     |_|   ||  ||")
+#INFO#
+print("Konsole(Log)")
+print("Start")
+sleep(1)
+print("Dictionary refrasht")
+# def
+def saas():
+    #eingabe feld erstellen
+    nutzerpasswort = Passwort.get()
+    nutzernutzername = Nutzername.get()
+#2Buttons(Anmelden und Registrieren NICHT LÖSCHEN#   
+def auswehlen():
+    root.config()
+    fertig.pack(side=BOTTOM)
+    Nutzername.pack(side=BOTTOM)
+    Passwort.pack(side=BOTTOM)
+    #+command (Registrieren)
+    print("Registrier befehl Augelöst")
+def auswehlen_():
+    root.config()
+    enter.pack(side=BOTTOM)
+    Nutzername.pack(side=BOTTOM)
+    Passwort.pack(side=BOTTOM)
+    #+command (Anmelden)
+def überprüfung():
+    #anmelden
+    #NICHT MEHR ÄNDERN
+    Eingabe_Nutzer = Passwort.get()
+    Eingabe_Passwort = Nutzername.get()
+    print("finished#1")
+    if Eingabe_Nutzer in Nutzername_Passwort:
+        if Nutzername_Passwort[Eingabe_Nutzer] == Eingabe_Passwort:
+            print("Finished#2")
+            root.destroy()
+            fenster = Tk()
+            fenster.geometry("400x300")
+            fenster.title("New App")
+            print("Finished")
+        else:
+            #image=wiederholen
+            #returnthis.pack(side=LEFT)
+            #sleep(1)
+            #pack_forget(returnthis)
+            return
+    else:
+        #image=wiederholen
+        #returnthis.pack(side=LEFT)
+        #sleep(1)
+        #pack_forget(returnthis)
+        return
+def fertig():
+    #registrieren
+    #NICHTMEHR ÄNDERN
+    #get eingaben  
+        nutzernutzername = Passwort.get()
+        nutzerpasswort = Nutzername.get()
+        if nutzerpasswort not in Nutzername_Passwort:
+            Nutzername_Passwort[nutzernutzername] = nutzerpasswort
+            root.destroy()
+            print("It has works")
+            print("You in")
+            sleep(1)
+            print("Neues Fenster wird erstellt")
+            sleep(1)
+            fenster = Tk()
+            fenster.geometry("400x300")
+            fenster.title("New App")
+            print("Finished")
+#Oberfleache
+root = Tk()
+#Passwort und Nutername eingaben
+Passwort = Entry(master=root, width=20)
+Nutzername = Entry(master= root, width=20, show="*")
+#___________________________PICTURES__________________________________________________________________#
+#loadingbar = PhotoImage(file="loading-bar.png")
+logo = PhotoImage(file="logo_.png")
+gifragistrieren = PhotoImage(file="icons8-sign-up-in-calendar-50.png")
+login = PhotoImage(file="icons8-login-rounded-up-50.png")
+weiter = PhotoImage(file="weiter.png")
+finished = PhotoImage(file="icons8-enter-50.png")
+#wiederholen = PhotoImage(file="icons8-return-32")#MORGEN WIEDERHOLEN
+#giflogo = PhotoImage(file="Anmeldenlogo.gif")#Wenn mag gegen das andere Logo austauschen
+#_____________________________________________________________________________________________________#
+#Button+Label
+button_ = Button(master=root,
+                 image=gifragistrieren,
+                command=auswehlen)
+button = Button(master=root,
+                image=login,
+               command=auswehlen_ )
+#returnthis = Button(master=root, image=wiederholen)
+fertig = Button(master=root, image=weiter,
+                command=fertig)
+enter = Button(master=root, image=finished,
+               command=überprüfung)
+label = Label(master=root, width=340,
+              height=260, font=("Arial", 16),
+              bg="black", image=logo)
+#root
+root.iconbitmap("yota_icons.gif")
+label.pack()
+button.pack(side=RIGHT)
+button_.pack(side=LEFT)
+root.title("Anmelden/Registrieren")
+root.mainloop()

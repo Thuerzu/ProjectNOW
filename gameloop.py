@@ -1,4 +1,4 @@
-import Terrain base generator.py
+import Terrain_base_generator
 
 
 class player:

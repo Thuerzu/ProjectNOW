@@ -118,7 +118,6 @@ class Game:
             self.seed = seed
         print(self.seed)
         
-        self.noise_cell_size = 112 #96 normal?; 128 probably huge
         self.connecting_noise2 = perlin2d(self.seed)
         self.blob_noise2 = perlin2d(2**32-self.seed-1)
         self.massif_noise2 = perlin2d(self.seed^0x8f1062d4)
@@ -131,6 +130,8 @@ class Game:
     def new_chunk(self,x):
         #new version
         #connecting caves
+        passage_noise_cellsize = 112
+
         path_size = 0.0125
 
         path_value = 0.5
@@ -164,16 +165,15 @@ class Game:
         translation_cellsize = 8
 
         #passage_map = [[((self.connecting_noise2.get(.5*(16*x+columns)/self.noise_cell_size, 1*rows/self.noise_cell_size)/2 + 0.5 + self.connecting_noise2.get(1*(16*x+columns)/self.noise_cell_size, 2*rows/self.noise_cell_size)/4 + 0.25 + self.connecting_noise2.get(2*(16*x+columns)/self.noise_cell_size, 4*rows/self.noise_cell_size)/8 + 0.125)/1.75)  for rows in range(self.rows)] for columns in range(16)]
-        passage_map = [[self.connecting_noise2.get_l(0.5*(16*x +columns)/self.noise_cell_size, rows/self.noise_cell_size,3)/2 + 0.5  for rows in range(self.rows)] for columns in range(16)]
-        #map_giant_caves =  [[(((self.blob_noise2.get(.5*(16*x+columns)/cave_noise_cellsize, 1.5*rows/cave_noise_cellsize)/2 + 0.5 + self.blob_noise2.get(1*(16*x+columns)/cave_noise_cellsize, 3*rows/cave_noise_cellsize)/4 + 0.25 + self.blob_noise2.get(2*(16*x+columns)/cave_noise_cellsize, 6*rows/cave_noise_cellsize)/8 + 0.125)/1.75)*3.5 - 1*(1 - abs(passage_map[columns][rows] - path_value - path_value_shift * min(max((rows-value_shift_start)/(value_shift_end-value_shift_start),0),1))))  for rows in range(self.rows)] for columns in range(16)]
-        map_giant_caves = [[(self.blob_noise2.get_l(1 * (16 * x + columns) / cave_noise_cellsize, 1 * rows / cave_noise_cellsize, 3) / 2 + 0.5) for rows in range(self.rows)] for columns in range(16)] #*3.5 - 1*(1 - abs(passage_map[columns][rows] - path_value - path_value_shift * min(max((rows-value_shift_start)/(value_shift_end-value_shift_start),0),1)))
-        massif_map = [[((self.massif_noise2.get((16*x+columns)/massif_cellsize, rows/massif_cellsize)/2 + 0.5 + self.massif_noise2.get((16*x+columns)/massif_cellsize, rows/massif_cellsize)/4 + 0.25 + self.massif_noise2.get((16*x+columns)/massif_cellsize, rows/massif_cellsize)/8 + 0.125)/1.75)  for rows in range(self.rows)] for columns in range(16)]
+        #passage_map = [[self.connecting_noise2.get_l(0.5*(16*x +columns)/passage_noise_cellsize, rows/passage_noise_cellsize,3)/2 + 0.5  for rows in range(self.rows)] for columns in range(16)]
+        #map_giant_caves = [[(self.blob_noise2.get_l(1 * (16 * x + columns) / cave_noise_cellsize, 1 * rows / cave_noise_cellsize, 3) / 2 + 0.5) for rows in range(self.rows)] for columns in range(16)] #*3.5 - 1*(1 - abs(passage_map[columns][rows] - path_value - path_value_shift * min(max((rows-value_shift_start)/(value_shift_end-value_shift_start),0),1)))
+        #massif_map = [[((self.massif_noise2.get((16*x+columns)/massif_cellsize, rows/massif_cellsize)/2 + 0.5 + self.massif_noise2.get((16*x+columns)/massif_cellsize, rows/massif_cellsize)/4 + 0.25 + self.massif_noise2.get((16*x+columns)/massif_cellsize, rows/massif_cellsize)/8 + 0.125)/1.75)  for rows in range(self.rows)] for columns in range(16)]
 
         self.map[x] = [[None for row in range(self.rows)] for column in range(16)]
         for column in range(16):
             for row in range(self.rows):
                 #if self.map[column][row] > min(0.42 + 0.06 * 2 * row/150, 0.48): #0.48:#0.42 + 0.06 * row/self.rows: #0.48:
-                if (map_giant_caves[column  + round()][row] < (cave_threshold + cave_growth*min(1,max(0, (row-cave_growth_start)/cave_growth_length)))*min(1, max(0,(682-row)/(100)))) or abs(passage_map[column + round(self.cave_translation_map.get_l((16*x+column)/translation_cellsize, row/translation_cellsize, 1)*10)][row] - path_value) < (1-min(max(0,massif_map[column][row]-0.51)*20, 1))*(path_size + growth_rate*min(max((row-growth_start)/(growth_end-growth_start),0),1))*min(1, max(0,(732-row)/(50))): #0.48:#0.42 + 0.06 * row/self.rows: #0.48:
+                if (self.blob_noise2.get_l((16*x+column+self.cave_translation_map.get_l((16*x+column)/translation_cellsize, row/translation_cellsize, 1)*10)/cave_noise_cellsize, row/cave_noise_cellsize, 3)/2+0.5 < (cave_threshold + cave_growth*min(1,max(0, (row-cave_growth_start)/cave_growth_length)))*min(1, max(0,(682-row)/(100)))) or abs(self.connecting_noise2.get_l((8*x+column/2+self.cave_translation_map.get_l((16*x+column)/translation_cellsize, row/translation_cellsize, 1)*5)/passage_noise_cellsize, row/passage_noise_cellsize,3)/2+0.5 - path_value) < (1-min(max(0,self.massif_noise2.get((16*x+column)/massif_cellsize,row/massif_cellsize)-0.51)*20, 1))*(path_size + growth_rate*min(max((row-growth_start)/(growth_end-growth_start),0),1))*min(1, max(0,(732-row)/(50))): #8*x + column / 2 instead of 16*x + column because of the passage noise moving twice as fast in y direction
                     self.map[x][column][row] = Block("air")
                 else:
                     self.map[x][column][row] = Block("stone") 
